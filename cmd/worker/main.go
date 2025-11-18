@@ -16,6 +16,7 @@ import (
 )
 
 func main() {
+	//Starts os.Interrupt to terminate program whenever user wants
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
@@ -24,7 +25,7 @@ func main() {
 	}
 }
 func run(ctx context.Context) error {
-
+	//Loads configuration parameters for goroutines and api calls
 	cfg := config.Load()
 
 	db, err := sql.Open("postgres", cfg.DatabaseURL)
@@ -38,18 +39,18 @@ func run(ctx context.Context) error {
 	db.SetConnMaxLifetime(30 * time.Minute)
 
 	store.SetDB(db)
-
+	//Ends the worker program in a set amount of downtime
 	pingCtx, cancel := context.WithTimeout(ctx, 3*time.Second)
 	defer cancel()
 	if err := db.PingContext(pingCtx); err != nil {
 		return err
 	}
-
+	//Deletes tickers from the tickers table that were already processed
 	err = store.CleanupProcessedTickers(ctx, db)
 	if err != nil {
 		return err
 	}
-	// Keep polling until we find unprocessed tickers
+	// Keep polling until program finds unprocessed tickers
 	var symbols []string
 	for {
 		symbols, err = store.GetAllTickers(ctx, db)

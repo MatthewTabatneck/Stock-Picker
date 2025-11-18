@@ -14,7 +14,7 @@ func InsertTickers(ctx context.Context, db *sql.DB, tickers []string) error {
 	}
 	defer func() { _ = tx.Rollback() }()
 
-	// Create temp list of new tickers
+	//Create temp list of new tickers
 	if _, err := tx.ExecContext(ctx, `CREATE TEMP TABLE _new(symbol text) ON COMMIT DROP`); err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func InsertTickers(ctx context.Context, db *sql.DB, tickers []string) error {
 		return err
 	}
 
-	// Upsert and reset queue state for incoming tickers
+	//Upsert and reset queue state for incoming tickers
 	if _, err := tx.ExecContext(ctx, `
 		INSERT INTO tickers (symbol, updated_at, is_processed)
 		SELECT symbol, now(), false FROM _new
@@ -33,10 +33,9 @@ func InsertTickers(ctx context.Context, db *sql.DB, tickers []string) error {
 		return err
 	}
 
-	// ✅ Cleanup:
-	// Delete any ticker that has been processed (regardless of snapshot existence)
-	// and is not in the new upload list.
-	// Snapshots remain safe because the FK is now RESTRICT (no cascade).
+	//Delete any ticker that has been processed (regardless of snapshot existence)
+	//and is not in the new upload list.
+	// napshots remain safe because the FK is now RESTRICT (no cascade).
 	if _, err := tx.ExecContext(ctx, `
     DELETE FROM tickers t
     WHERE t.is_processed = true
