@@ -45,11 +45,7 @@ func run(ctx context.Context) error {
 	if err := db.PingContext(pingCtx); err != nil {
 		return err
 	}
-	//Deletes tickers from the tickers table that were already processed
-	err = store.CleanupProcessedTickers(ctx, db)
-	if err != nil {
-		return err
-	}
+
 	// Keep polling until program finds unprocessed tickers
 	var symbols []string
 	for {
