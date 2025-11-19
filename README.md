@@ -1,4 +1,4 @@
-# Stock Screener
+# Stock Picker
 
 Stock Screener ingests a list of tickers from `tickers.csv`, loads them into Postgres, and runs workers that fetch data for further analysis. The repository will also serve as a sandbox for experiment projects that test different auto-trading strategies using the tickers table as the source of which stocks to investigate.
 
