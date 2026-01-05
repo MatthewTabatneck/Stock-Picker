@@ -63,5 +63,5 @@ Use `make down` to stop the containers and `make logs` to tail output.
 
 ## Future experiments
 
-The `tickers` table acts as the central queue of symbols to research. Future experimental projects will plug into this table to trial different automated trading strategies while reusing the same list of candidate stocks.
+The `tickers` table acts as the central queue of symbols to research. Future experimental projects will plug into this table to trial different automated trading strategies while reusing the same list of stocks.
 
